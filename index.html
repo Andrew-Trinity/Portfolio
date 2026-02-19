@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Game Dev & Web Software</title>
+  <meta name="description" content="A Year 10 portfolio showcasing game development and web software projects, skills, and achievements." />
+  <link rel="icon" href="data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <text y='70' x='10' font-size='70'>🎮</text>
+  </svg>">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Accessibility: Skip to content -->
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- CSS-Only Theme Switch (must appear before content) -->
+  <input type="checkbox" id="theme-switch" class="visually-hidden" aria-label="Toggle dark mode" />
+
+  <!-- CSS-Only Mobile Nav Toggle -->
+  <input type="checkbox" id="nav-toggle" class="visually-hidden" aria-label="Toggle navigation menu" />
+
+  <!-- Header / Nav -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="#home" class="brand" aria-label="Home">
+        <span class="brand__logo" aria-hidden="true">A</span>
+        <span class="brand__text">Alex Parker</span>
+        <span class="brand__tag">Student • Game Dev • Web</span>
+      </a>
+
+      <label for="nav-toggle" class="hamburger" aria-controls="site-nav" aria-expanded="false">
+        <span></span><span></span><span></span>
+        <span class="visually-hidden">Menu</span>
+      </label>
+
+      <nav id="site-nav" class="nav" role="navigation" aria-label="Primary">
+        <ul>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+          <li><a href="#awards">Awards</a></li>
+          <li><a href="#contact" class="btn btn--primary">Contact</a></li>
+        </ul>
+      </nav>
+
+      <label for="theme-switch" class="theme-toggle" title="Toggle light/dark mode" aria-live="polite">
+        <span class="moon" aria-hidden="true">🌙</span>
+        <span class="sun" aria-hidden="true">☀️</span>
+      </label>
+    </div>
+  </header>
+
+  <!-- Wrap rest of the page in .page so theme switch can restyle via sibling selector -->
+  <div class="page">
+
+    <!-- Hero -->
+    <section id="home" class="hero section">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <h1 class="hero__title">Game Development & Web Software</h1>
+          <p class="hero__subtitle">
+            I’m <strong>Alex Parker</strong>, a Year 10 student passionate about building
+            <em>playable experiences</em> and <em>useful web tools</em>. I love working with
+            <span class="chip">Unity/C#</span>, <span class="chip">Godot</span>,
+            <span class="chip">HTML &amp; CSS</span>, and <span class="chip">Python</span>.
+          </p>
+          <div class="hero__cta">
+            <a href="#projects" class="btn btn--primary">View Projects</a>
+            <a href="#skills" class="btn btn--ghost">Explore Skills</a>
+          </div>
+          <ul class="hero__meta">
+            <li><span aria-hidden="true">🎮</span> 5+ playable prototypes</li>
+            <li><span aria-hidden="true">💻</span> 8+ web mini-apps</li>
+            <li><span aria-hidden="true">🏆</span> 2 hackathon mentions</li>
+          </ul>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero-card">
+            <div class="hero-card__top">
+              <div class="led"></div><div class="led"></div><div class="led"></div>
+            </div>
+            <div class="hero-card__body">
+              <div class="hero-card__scene">
+                <!-- Minimal SVG placeholder -->
+                <svg viewBox="0 0 200 120" role="img" aria-label="Game scene">
+                  <defs>
+                    <linearGradient id="g" x1="0" x2="1">
+                      <stop offset="0" stop-color="#7c5cff"/>
+                      <stop offset="1" stop-color="#4cc9f0"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="0" y="0" width="200" height="120" fill="url(#g)"/>
+                  <circle cx="160" cy="30" r="12" fill="#ffe66d"/>
+                  <rect x="15" y="80" width="50" height="12" rx="6" fill="#e9ecef"/>
+                  <rect x="75" y="80" width="50" height="12" rx="6" fill="#e9ecef"/>
+                  <rect x="135" y="80" width="50" height="12" rx="6" fill="#e9ecef"/>
+                </svg>
+              </div>
+              <div class="hero-card__footer">
+                <span>Now Playing: Platformer Prototype v0.3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section">
+      <div class="container">
+        <header class="section__header">
+          <h2>Skills</h2>
+          <p>Core technologies and tools I use in game development and web software.</p>
+        </header>
+        <div class="skills__grid">
+          <article class="skill">
+            <h3>Game Dev</h3>
+            <ul class="list">
+              <li><span>Unity (C#)</span> <span class="meter" style="--v:80%"><i></i></span></li>
+              <li><span>Godot (GDScript)</span> <span class="meter" style="--v:65%"><i></i></span></li>
+              <li><span>Unreal (Blueprints)</span> <span class="meter" style="--v:40%"><i></i></span></li>
+            </ul>
+          </article>
+          <article class="skill">
+            <h3>Web</h3>
+            <ul class="list">
+              <li><span>HTML5</span> <span class="meter" style="--v:90%"><i></i></span></li>
+              <li><span>CSS3 (Flex/Grid)</span> <span class="meter" style="--v:85%"><i></i></span></li>
+              <li><span>JavaScript (Basics)</span> <span class="meter" style="--v:55%"><i></i></span></li>
+            </ul>
+          </article>
+          <article class="skill">
+            <h3>Other</h3>
+            <ul class="list">
+              <li><span>Python</span> <span class="meter" style="--v:70%"><i></i></span></li>
+              <li><span>Git/GitHub</span> <span class="meter" style="--v:60%"><i></i></span></li>
+              <li><span>UI/UX & Accessibility</span> <span class="meter" style="--v:65%"><i></i></span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects with CSS-only filters -->
+    <section id="projects" class="section section--alt">
+      <div class="container">
+        <header class="section__header">
+          <h2>Projects</h2>
+          <p>Filter between <strong>Game Dev</strong> and <strong>Web Software</strong>—no JavaScript required.</p>
+        </header>
+
+        <!-- Filter Controls (CSS-only radios) -->
+        <div class="filters" role="tablist" aria-label="Project filters">
+          <input type="radio" name="filter" id="filter-all" class="visually-hidden" checked />
+          <input type="radio" name="filter" id="filter-games" class="visually-hidden" />
+          <input type="radio" name="filter" id="filter-web" class="visually-hidden" />
+
+          <div class="filters__labels">
+            <label for="filter-all" class="chip chip--filter">All</label>
+            <label for="filter-games" class="chip chip--filter">Game Dev</label>
+            <label for="filter-web" class="chip chip--filter">Web Software</label>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="cards">
+          <!-- GAME -->
+          <article class="card" data-category="games">
+            <div class="card__media">
+              <img src="assets/platformer.png" alt="Screenshot of Platformer Prototype game" />
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">Platformer Prototype</h3>
+              <p class="card__desc">Unity/C#: physics-based movement, coyote time, variable jump, collectible system, 3 levels.</p>
+              <ul class="tags">
+                <li>Unity</li><li>C#</li><li>2D</li>
+              </ul>
+            </div>
+            <div class="card__actions">
+              <a href="#" class="btn btn--ghost" aria-label="Play Platformer Prototype">Play</a>
+              <a href="#" class="btn btn--primary" aria-label="View source code for Platformer Prototype">Code</a>
+            </div>
+          </article>
+
+          <!-- GAME -->
+          <article class="card" data-category="games">
+            <div class="card__media">
+              <img src="assets/topdown.png" alt="Screenshot of Top-Down RPG demo" />
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">Top-Down RPG Demo</h3>
+              <p class="card__desc">Godot: tilemap world, dialogue system (JSON), enemy AI using state machine, inventory UI.</p>
+              <ul class="tags">
+                <li>Godot</li><li>GDScript</li><li>AI</li>
+              </ul>
+            </div>
+            <div class="card__actions">
+              <a href="#" class="btn btn--ghost">Play</a>
+              <a href="#" class="btn btn--primary">Code</a>
+            </div>
+          </article>
+
+          <!-- WEB -->
+          <article class="card" data-category="web">
+            <div class="card__media">
+              <img src="assets/taskapp.png" alt="Screenshot of Task Tracker web app" />
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">Task Tracker</h3>
+              <p class="card__desc">A11y-focused to-do app with keyboard support, localStorage (progressive enhancement ready).</p>
+              <ul class="tags">
+                <li>HTML</li><li>CSS</li><li>JS</li>
+              </ul>
+            </div>
+            <div class="card__actions">
+              <a href="#" class="btn btn--ghost">Live</a>
+              <a href="#" class="btn btn--primary">Code</a>
+            </div>
+          </article>
+
+          <!-- WEB -->
+          <article class="card" data-category="web">
+            <div class="card__media">
+              <img src="assets/portfolio.png" alt="Screenshot of responsive portfolio website" />
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">CSS Components Library</h3>
+              <p class="card__desc">Reusable, accessible components: cards, modals, tabs, chips, and responsive grids.</p>
+              <ul class="tags">
+                <li>CSS</li><li>Flex/Grid</li><li>A11y</li>
+              </ul>
+            </div>
+            <div class="card__actions">
+              <a href="#" class="btn btn--ghost">Docs</a>
+              <a href="#" class="btn btn--primary">Code</a>
+            </div>
+          </article>
+
+          <!-- GAME -->
+          <article class="card" data-category="games">
+            <div class="card__media">
+              <img src="assets/puzzle.png" alt="Screenshot of puzzle game with shaders" />
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">Shader Puzzle</h3>
+              <p class="card__desc">Unity URP: sprite shaders (glow/outline), simple node-based puzzle logic.</p>
+              <ul class="tags">
+                <li>Unity</li><li>Shaders</li><li>URP</li>
+              </ul>
+            </div>
+            <div class="card__actions">
+              <a href="#" class="btn btn--ghost">Play</a>
+              <a href="#" class="btn btn--primary">Code</a>
+            </div>
+          </article>
+        </div>
+
+        <details class="note">
+          <summary>How to add more projects</summary>
+          <p>Duplicate any <code>&lt;article class="card" ...&gt;</code>, set <code>data-category="games"</code> or <code>"web"</code>, update image, text, and links.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section id="timeline" class="section">
+      <div class="container">
+        <header class="section__header">
+          <h2>Learning Timeline</h2>
+          <p>Highlights from my progress this year (sprints, showcases, and reflections).</p>
+        </header>
+        <ol class="timeline">
+          <li class="timeline__item">
+            <time class="timeline__time">Term 1</time>
+            <div class="timeline__card">
+              <h3>Platformer Mechanics</h3>
+              <p>Built coyote time and variable jump after researching game feel. Fixed collision bugs using raycast checks.</p>
+              <ul class="tags"><li>Physics</li><li>Game Feel</li></ul>
+            </div>
+          </li>
+          <li class="timeline__item">
+            <time class="timeline__time">Term 2</time>
+            <div class="timeline__card">
+              <h3>Dialogue & State Systems</h3>
+              <p>Created a finite state machine for NPCs. JSON dialogue from external files helped iterate faster.</p>
+              <ul class="tags"><li>FSM</li><li>Data-Driven</li></ul>
+            </div>
+          </li>
+          <li class="timeline__item">
+            <time class="timeline__time">Term 3</time>
+            <div class="timeline__card">
+              <h3>Web Tools & Components</h3>
+              <p>Designed accessible components and documentation site. Practiced ARIA and semantic HTML.</p>
+              <ul class="tags"><li>A11y</li><li>Docs</li></ul>
+            </div>
+          </li>
+          <li class="timeline__item">
+            <time class="timeline__time">Term 4</time>
+            <div class="timeline__card">
+              <h3>Showcase & Polishing</h3>
+              <p>Optimized assets, reduced layout shift, added dark mode and a filterable projects section (CSS-only).</p>
+              <ul class="tags"><li>Perf</li><li>Polish</li></ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Awards -->
+    <section id="awards" class="section section--alt">
+      <div class="container">
+        <header class="section__header">
+          <h2>Awards & Mentions</h2>
+          <p>Recognition for projects and teamwork.</p>
+        </header>
+        <div class="awards">
+          <article class="award">
+            <h3>School Innovation Showcase — Distinction</h3>
+            <p>Platformer Prototype judged for polish and accessibility notes.</p>
+          </article>
+          <article class="award">
+            <h3>Local Hackathon — Honourable Mention</h3>
+            <p>Built a task tracker with strong keyboard navigation and ARIA labels.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="container">
+        <header class="section__header">
+          <h2>Contact</h2>
+          <p>If you’d like to test a build, suggest improvements, or collaborate, get in touch.</p>
+        </header>
+        <div class="contact__grid">
+          <form class="form" action="mailto:your.email@example.com" method="post" enctype="text/plain">
+            <div class="form__row">
+              <label for="name">Name</label>
+              <input id="name" name="Name" type="text" required placeholder="Your name" />
+            </div>
+            <div class="form__row">
+              <label for="email">Email</label>
+              <input id="email" name="Email" type="email" required placeholder="you@example.com" />
+            </div>
+            <div class="form__row">
+              <label for="message">Message</label>
+              <textarea id="message" name="Message" rows="5" required placeholder="How can I help?"></textarea>
+            </div>
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit">Send</button>
+              <button class="btn btn--ghost" type="reset">Reset</button>
+            </div>
+            <p class="form__note">This uses <strong>mailto:</strong> and will open your email app. For a backend, connect to a form service later.</p>
+          </form>
+
+          <aside class="contact__aside">
+            <div class="card mini">
+              <h3>Links</h3>
+              <ul class="links">
+                <li><a href="#" aria-label="View GitHub profile">GitHub</a></li>
+                <li><a href="#" aria-label="View itch.io profile">itch.io</a></li>
+                <li><a href="#" aria-label="Download resume PDF">Resume (PDF)</a></li>
+              </ul>
+            </div>
+            <div class="card mini">
+              <h3>Availability</h3>
+              <p>After school and weekends. Happy to playtest and review code.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container footer__grid">
+        <p>&copy; <span id="year">2026</span> Alex Parker — Year 10 Portfolio</p>
+        <ul class="footer__links">
+          <li><a href="#home">Top</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </footer>
+
+  </div><!-- /.page -->
+</body>
+</html>
+``
