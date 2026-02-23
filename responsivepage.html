@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Mobile Friendly Site</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #333;
+        }
+
+        header {
+            background: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        nav {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        nav a {
+            margin: 0 1rem;
+            text-decoration: none;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background: #fff;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            nav a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>My Mobile Friendly Website</h1>
+        <p>Clean. Simple. Responsive.</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#info">Info</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="container">
+        <div class="card" id="home">
+            <h2>Welcome</h2>
+            <p>This is a simple, responsive site that looks great on phones and desktops.</p>
+        </div>
+
+        <div class="card" id="info">
+            <h2>Information</h2>
+            <p>You can easily customise this layout for school projects, portfolios, or classroom use.</p>
+        </div>
+
+        <div class="card" id="contact">
+            <h2>Contact</h2>
+            <p>Feel free to add your own contact details here.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 My Simple Website</p>
+    </footer>
+
+</body>
+</html>
