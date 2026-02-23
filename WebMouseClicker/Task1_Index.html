@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clicker Game (v1)</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: grid; place-items: center; min-height: 100dvh; margin: 0;
+      background: radial-gradient(1200px 800px at 50% -20%, #eef, #dde, #ccd);
+    }
+    .card {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(6px);
+      border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      max-width: 420px; width: 92%;
+    }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; }
+    p { margin: 0.5rem 0; }
+    .count { font-size: 2.4rem; font-weight: 700; margin: 12px 0; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: .5rem; padding: 12px 20px; border-radius: 12px; border: none; cursor: pointer;
+      background: #4f46e5; color: white; font-size: 1.1rem; font-weight: 600;
+    }
+    .btn:active { transform: translateY(1px); }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .btn.secondary { background: #64748b; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Clicker Game <span aria-hidden="true">🖱️</span></h1>
+    <p id="desc">Click the button to increase your score.</p>
+    <div class="count" aria-live="polite" aria-atomic="true">
+      Score: <span id="score">0</span>
+    </div>
+
+    <div class="row">
+      <button id="clickBtn" class="btn" aria-describedby="desc">Click me!</button>
+      <button id="resetBtn" class="btn secondary">Reset</button>
+    </div>
+
+    <p class="sr-only" id="a11yStatus" aria-live="polite"></p>
+  </main>
+
+  <script>
+    // === State (structured data) ===
+    let score = 0;
+
+    // === Elements ===
+    const scoreEl = document.getElementById('score');
+    const clickBtn = document.getElementById('clickBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const a11yStatus = document.getElementById('a11yStatus');
+
+    // === Functions ===
+    function updateScore(newScore) {
+      score = newScore;
+      scoreEl.textContent = String(score);
+      a11yStatus.textContent = `Score is now ${score}.`;
+    }
+
+    // === Event Handlers ===
+    clickBtn.addEventListener('click', () => updateScore(score + 1));
+    // Keyboard accessibility (Space/Enter)
+    clickBtn.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        updateScore(score + 1);
+      }
+    });
+
+    resetBtn.addEventListener('click', () => updateScore(0));
+  </script>
+</body>
+</html>
