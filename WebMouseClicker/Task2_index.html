@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clicker Game (v2 – Data & Visualisation)</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: grid; place-items: start center; min-height: 100dvh; margin: 0; padding: 24px;
+      background: linear-gradient(180deg, #f7f7ff, #e9ecff);
+    }
+    .wrap { width: 100%; max-width: 980px; display: grid; gap: 16px; }
+    .card {
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(6px);
+      border-radius: 16px; padding: 16px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; }
+    h2 { margin: 12px 0 8px; font-size: 1.2rem; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      background: #4f46e5; color: white; border: none; border-radius: 12px;
+      padding: 10px 16px; font-weight: 600; cursor: pointer;
+    }
+    .btn.secondary { background: #64748b; }
+    .btn.ghost { background: transparent; color: #334155; border: 1px solid #cbd5e1; }
+    label { font-weight: 600; }
+    input[type="number"] { padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1; width: 7rem; }
+    .stat { font-size: 1.1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb; font-size: .95rem; }
+    canvas { width: 100%; height: 220px; block-size: 220px; }
+    .muted { color: #475569; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>Clicker Game <span aria-hidden="true">🖱️</span> — v2</h1>
+      <p id="desc" class="muted">Play a timed round. Your clicks are recorded per second for analysis.</p>
+      <div class="row">
+        <label for="duration">Duration (seconds):</label>
+        <input id="duration" type="number" min="5" max="120" step="5" value="20" />
+        <button id="startBtn" class="btn">Start Round</button>
+        <button id="clickBtn" class="btn secondary" disabled aria-describedby="desc">Click!</button>
+        <button id="resetBtn" class="btn ghost">Reset UI</button>
+      </div>
+      <div class="row">
+        <div class="stat">Time left: <strong><span id="timeLeft">—</span></strong>s</div>
+        <div class="stat">Score: <strong><span id="score">0</span></strong></div>
+        <div class="stat">CPS (avg): <strong><span id="avgCps">0.00</span></strong></div>
+      </div>
+      <p class="sr-only" id="a11yStatus" aria-live="polite"></p>
+    </section>
+
+    <section class="card grid" aria-labelledby="analysisTitle">
+      <div>
+        <h2 id="analysisTitle">Analysis (this round)</h2>
+        <canvas id="chart" aria-label="Clicks per second line chart" role="img"></canvas>
+        <p class="muted">Visualises clicks per second during the round (CT5-DAT-02).</p>
+      </div>
+      <div>
+        <h2>Sessions (saved)</h2>
+        <div class="row" style="margin-bottom:8px;">
+          <button id="exportCsvBtn" class="btn ghost">Export CSV</button>
+          <button id="clearSessionsBtn" class="btn ghost">Clear Saved Sessions</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Duration (s)</th>
+              <th>Total Clicks</th>
+              <th>Avg CPS</th>
+            </tr>
+          </thead>
+          <tbody id="sessionsTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Systems Thinking (explain your design)</h2>
+      <ul class="muted">
+        <li><strong>Inputs:</strong> mouse/keyboard clicks; duration setting</li>
+        <li><strong>Processes:</strong> timestamping clicks, binning per second, computing CPS, drawing chart</li>
+        <li><strong>Outputs:</strong> score, CPS value, line chart, saved session summary</li>
+        <li><strong>Feedback loops:</strong> graph and CPS influence player behaviour; design changes based on data</li>
+        <li><strong>Boundaries & components:</strong> UI, timer, data model, persistence (localStorage), renderer</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    // ===== Data Model =====
+    // Each round captures timestamps, then we aggregate to clicks-per-second.
+    let running = false;
+    let startTime = 0;
+    let endTime = 0;
+    let timerId = null;
+    let score = 0;
+    let durationSec = 20;
+    let clickTimestamps = []; // ms, relative to start
+    const sessionsKey = "clicker:sessions"; // localStorage key
+
+    // ===== Elements =====
+    const durationInput = document.getElementById('duration');
+    const startBtn = document.getElementById('startBtn');
+    const clickBtn = document.getElementById('clickBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const timeLeftEl = document.getElementById('timeLeft');
+    const scoreEl = document.getElementById('score');
+    const avgCpsEl = document.getElementById('avgCps');
+    const a11yStatus = document.getElementById('a11yStatus');
+    const chartCanvas = document.getElementById('chart');
+    const sessionsTbody = document.getElementById('sessionsTbody');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const clearSessionsBtn = document.getElementById('clearSessionsBtn');
+
+    // ===== Utilities =====
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    function formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString();
+    }
+    function saveSession(session) {
+      const arr = JSON.parse(localStorage.getItem(sessionsKey) || "[]");
+      arr.unshift(session);
+      localStorage.setItem(sessionsKey, JSON.stringify(arr));
+      renderSessions();
+    }
+    function getSessions() {
+      return JSON.parse(localStorage.getItem(sessionsKey) || "[]");
+    }
+    function clearSessions() {
+      localStorage.removeItem(sessionsKey);
+      renderSessions();
+    }
+
+    // Convert timestamps to clicks per second bins
+    function toCpsSeries(timestamps, totalSeconds) {
+      const bins = Array.from({ length: totalSeconds }, () => 0);
+      for (const t of timestamps) {
+        const s = Math.floor(t / 1000);
+        if (s >= 0 && s < totalSeconds) bins[s] += 1;
+      }
+      return bins; // e.g., [3,1,0,5,...]
+    }
+
+    // ===== Chart (vanilla canvas) =====
+    function drawLineChart(canvas, data) {
+      const dpr = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight || 220;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      // Clear
+      ctx.clearRect(0, 0, width, height);
+
+      const padding = { top: 18, right: 12, bottom: 28, left: 32 };
+      const innerW = width - padding.left - padding.right;
+      const innerH = height - padding.top - padding.bottom;
+
+      const maxY = Math.max(1, ...data); // avoid zero range
+      const stepX = data.length > 1 ? innerW / (data.length - 1) : innerW;
+
+      // Axes
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      // y-axis
+      ctx.moveTo(padding.left, padding.top);
+      ctx.lineTo(padding.left, height - padding.bottom);
+      // x-axis
+      ctx.moveTo(padding.left, height - padding.bottom);
+      ctx.lineTo(width - padding.right, height - padding.bottom);
+      ctx.stroke();
+
+      // Y labels (0 and max)
+      ctx.fillStyle = '#475569';
+      ctx.font = '12px system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(String(maxY), padding.left - 6, padding.top + 6);
+      ctx.fillText('0', padding.left - 6, height - padding.bottom);
+
+      // X labels (seconds)
+      ctx.textAlign = 'center';
+      ctx.fillText('seconds →', width - padding.right - 28, height - 6);
+
+      // Line
+      ctx.strokeStyle = '#4f46e5';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      data.forEach((y, i) => {
+        const xPos = padding.left + i * stepX;
+        const yPos = padding.top + (1 - y / maxY) * innerH;
+        if (i === 0) ctx.moveTo(xPos, yPos);
+        else ctx.lineTo(xPos, yPos);
+      });
+      ctx.stroke();
+
+      // Points
+      ctx.fillStyle = '#4f46e5';
+      data.forEach((y, i) => {
+        const xPos = padding.left + i * stepX;
+        const yPos = padding.top + (1 - y / maxY) * innerH;
+        ctx.beginPath();
+        ctx.arc(xPos, yPos, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function renderSessions() {
+      const rows = getSessions().map(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDate(s.startedAt)}</td>
+          <td>${s.duration}</td>
+          <td>${s.totalClicks}</td>
+          <td>${s.avgCps.toFixed(2)}</td>
+        `;
+        return tr;
+      });
+      sessionsTbody.replaceChildren(...rows);
+    }
+
+    function exportCSV(sessions) {
+      const header = ["startedAt", "duration", "totalClicks", "avgCps"];
+      const lines = [header.join(",")];
+      for (const s of sessions) {
+        lines.push([new Date(s.startedAt).toISOString(), s.duration, s.totalClicks, s.avgCps.toFixed(4)].join(","));
+      }
+      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "clicker_sessions.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== Round lifecycle =====
+    function startRound() {
+      if (running) return;
+      durationSec = clamp(parseInt(durationInput.value || "20", 10), 5, 120);
+      running = true;
+      score = 0;
+      clickTimestamps = [];
+      startTime = performance.now();
+      endTime = startTime + durationSec * 1000;
+      clickBtn.disabled = false;
+      startBtn.disabled = true;
+      durationInput.disabled = true;
+      updateUI();
+
+      a11yStatus.textContent = `Round started for ${durationSec} seconds.`;
+
+      // Tick timer
+      timerId = setInterval(() => {
+        const now = performance.now();
+        const remainMs = Math.max(0, endTime - now);
+        timeLeftEl.textContent = (remainMs / 1000).toFixed(1);
+        if (remainMs <= 0) stopRound();
+      }, 100);
+    }
+
+    function stopRound() {
+      if (!running) return;
+      running = false;
+      clearInterval(timerId);
+      timerId = null;
+      clickBtn.disabled = true;
+      startBtn.disabled = false;
+      durationInput.disabled = false;
+      timeLeftEl.textContent = "0.0";
+
+      // Analyse
+      const cpsSeries = toCpsSeries(clickTimestamps, durationSec);
+      const totalClicks = score;
+      const avgCps = totalClicks / durationSec;
+      avgCpsEl.textContent = avgCps.toFixed(2);
+      drawLineChart(chartCanvas, cpsSeries);
+
+      // Save session summary
+      saveSession({
+        startedAt: Date.now() - durationSec * 1000,
+        duration: durationSec,
+        totalClicks,
+        avgCps
+      });
+
+      a11yStatus.textContent = `Round finished. Total clicks ${totalClicks}. Average CPS ${avgCps.toFixed(2)}.`;
+    }
+
+    function updateUI() {
+      scoreEl.textContent = String(score);
+      timeLeftEl.textContent = running ? ((endTime - performance.now()) / 1000).toFixed(1) : "—";
+      if (!running) avgCpsEl.textContent = "0.00";
+    }
+
+    // ===== Events =====
+    startBtn.addEventListener('click', startRound);
+    clickBtn.addEventListener('click', () => {
+      if (!running) return;
+      const now = performance.now();
+      clickTimestamps.push(now - startTime);
+      score += 1;
+      scoreEl.textContent = String(score);
+    });
+    clickBtn.addEventListener('keydown', (e) => {
+      if ((e.key === ' ' || e.key === 'Enter') && running) {
+        e.preventDefault();
+        const now = performance.now();
+        clickTimestamps.push(now - startTime);
+        score += 1;
+        scoreEl.textContent = String(score);
+      }
+    });
+    resetBtn.addEventListener('click', () => {
+      if (running) stopRound();
+      score = 0; clickTimestamps = [];
+      avgCpsEl.textContent = "0.00";
+      drawLineChart(chartCanvas, []);
+      updateUI();
+      a11yStatus.textContent = 'UI reset.';
+    });
+    exportCsvBtn.addEventListener('click', () => exportCSV(getSessions()));
+    clearSessionsBtn.addEventListener('click', () => {
+      clearSessions();
+      a11yStatus.textContent = 'Saved sessions cleared.';
+    });
+
+    // Init
+    renderSessions();
+    drawLineChart(chartCanvas, []);
+    updateUI();
+  </script>
+</body>
+</html>
